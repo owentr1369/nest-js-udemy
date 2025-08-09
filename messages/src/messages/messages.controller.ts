@@ -1,4 +1,4 @@
-import { CreateMessageDto } from './../dtos/create-message.dto';
+import { CreateMessageDto } from './create-message.dto';
 import { Controller, Delete, Get, Post, Body, Param } from '@nestjs/common';
 
 @Controller('messages')
