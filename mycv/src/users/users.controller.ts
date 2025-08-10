@@ -7,6 +7,7 @@ import {
   Put,
   Delete,
   ParseIntPipe,
+  Patch,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -44,5 +45,13 @@ export class UsersController {
   @Delete('/:id')
   async removeUser(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
+  }
+
+  @Patch('/:id')
+  async updatePathUser(
+    @Param('id', ParseIntPipe) id: string,
+    @Body() body: UpdateUserDto,
+  ) {
+    return this.usersService.update(parseInt(id), body);
   }
 }
