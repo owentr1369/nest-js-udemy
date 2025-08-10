@@ -1,5 +1,15 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Get,
+  Put,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('auth')
@@ -10,6 +20,29 @@ export class UsersController {
 
   @Post('/signup')
   async createUser(@Body() body: CreateUserDto) {
-    await this.usersService.create(body.email, body.password);
+    return await this.usersService.create(body.email, body.password);
+  }
+
+  @Get('/:id')
+  async findUser(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findOne(id);
+  }
+
+  @Get()
+  async findAllUsers() {
+    return this.usersService.find('');
+  }
+
+  @Put('/:id')
+  async updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateUserDto,
+  ) {
+    return this.usersService.update(id, body);
+  }
+
+  @Delete('/:id')
+  async removeUser(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.remove(id);
   }
 }
