@@ -9,11 +9,12 @@ import {
   ParseIntPipe,
   Patch,
   UseInterceptors,
-  ClassSerializerInterceptor,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
+import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 
 @Controller('auth')
 export class UsersController {
@@ -26,10 +27,15 @@ export class UsersController {
     return await this.usersService.create(body.email, body.password);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(SerializeInterceptor)
   @Get('/:id')
   async findUser(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne(id);
+    console.log('Handler is running');
+    const user = await this.usersService.findOne(id);
+    if (!user) {
+      return new NotFoundException('User not found');
+    }
+    return user;
   }
 
   @Get()
