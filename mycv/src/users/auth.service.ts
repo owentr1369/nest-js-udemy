@@ -23,13 +23,10 @@ export class AuthService {
 
     // join the hashed password and the salt together
     const result = salt + '.' + hash.toString('hex');
-    console.log(result);
-
-    // join the hashed password and the salt together
-
     // create a new user and save it
-
+    const user = await this.usersService.create(email, result);
     // return the user
+    return user;
   }
   signin() {}
 }
