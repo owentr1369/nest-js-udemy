@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   NotFoundException,
+  Session,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -27,6 +28,16 @@ export class UsersController {
   ) {
     this.usersService = usersService;
     this.authService = authService;
+  }
+
+  @Get('/colors/:color')
+  setColor(@Param('color') color: string, @Session() session: any) {
+    session.color = color;
+  }
+
+  @Get('/colors')
+  getColors(@Session() session: any) {
+    return session.color;
   }
 
   @Post('/signup')
