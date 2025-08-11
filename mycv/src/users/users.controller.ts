@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   NotFoundException,
+  Session,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -17,7 +18,6 @@ import { UsersService } from './users.service';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
 import { AuthService } from './auth.service';
-import { Session } from 'inspector/promises';
 
 @Controller('auth')
 @Serialize(UserDto)
@@ -30,10 +30,17 @@ export class UsersController {
     this.authService = authService;
   }
 
+  @Get('/whoami')
+  async whoAmI(@Session() session: any) {
+    return this.usersService.findOne(session.userId);
+  }
+
   @Post('/signup')
   async createUser(@Body() body: CreateUserDto, @Session() session: any) {
     const user = await this.authService.signup(body.email, body.password);
-    session.userId = user.id;
+    if (session) {
+      session.userId = user.id;
+    }
     return user;
   }
 
