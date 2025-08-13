@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Report } from './reports.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/user.entity';
+import { GetEstimateDto } from './dtos/get-estimate.dto';
 
 @Injectable()
 export class ReportsService {
@@ -19,5 +20,11 @@ export class ReportsService {
       throw new NotFoundException('report not found');
     }
     return this.repo.update(id, { approved });
+  }
+  createEstimate(estimateDto: GetEstimateDto) {
+    return this.repo.find({
+      select: ['price'],
+      where: estimateDto,
+    });
   }
 }
