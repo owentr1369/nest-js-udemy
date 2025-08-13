@@ -1,6 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { UsersService } from '../users.service';
+import { User } from '../user.entity';
+declare module 'express-serve-static-core' {
+  interface Request {
+    currentUser?: User;
+  }
+}
 
 @Injectable()
 export class CurrentUserMiddleware implements NestMiddleware {
@@ -9,8 +16,7 @@ export class CurrentUserMiddleware implements NestMiddleware {
     const { userId } = req.session || {};
     if (userId) {
       const user = await this.usersService.findOne(userId);
-      // @ts-expect-error - currentUser is not defined in the Request interface
-      req.currentUser = user;
+      req.currentUser = user || undefined;
     }
     next();
   }
